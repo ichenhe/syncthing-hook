@@ -1,0 +1,36 @@
+/config/config.sthook.yaml
+
+
+# idea
+/.idea
+
+# build
+/bin
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Go workspace file
+go.work
+
+# mac
+.DS_Store
+.AppleDouble
+.LSOverride
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.lnk
+# Folder config file
+[Dd]esktop.ini

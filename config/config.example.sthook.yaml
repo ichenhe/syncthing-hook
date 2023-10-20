@@ -1,0 +1,13 @@
+syncthing:
+  url: http://localhost:8384
+  apikey: ""
+
+hooks:
+  - event-type: "ex:LocalFolderContentChangeDetected"
+    parameter:
+      st-folder: "xxxxx-yyyyy"
+      path: "/"
+      tolerance: 0
+    action:
+      type: "exec"
+      cmd: [ '/Library/Input Methods/Squirrel.app/Contents/MacOS/Squirrel', '--sync' ]
