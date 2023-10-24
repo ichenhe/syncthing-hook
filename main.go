@@ -16,7 +16,7 @@ func main() {
 	st, _ := stclient.NewSyncthing(appProfile.Syncthing.Url, appProfile.Syncthing.ApiKey, logger.Sugar())
 
 	hookManager := sthook.NewHookManager(st, logger)
-	if err := hookManager.RegisterHook(&appProfile.Hooks[0]); err != nil {
+	if err := hookManager.RegisterHook(&appProfile.Hooks[0], 0); err != nil {
 		logger.Sugar().Errorln(err)
 	}
 

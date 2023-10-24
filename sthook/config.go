@@ -43,6 +43,11 @@ func LoadAppProfile(path string) (*AppProfile, error) {
 	return appProfile, nil
 }
 
+func (p HookParameters) containsKey(key string) (ex bool) {
+	_, ex = p[key]
+	return
+}
+
 func (p HookParameters) getString(key string, defaultValue string) string {
 	if v, ex := p[key]; !ex {
 		return defaultValue
@@ -50,6 +55,23 @@ func (p HookParameters) getString(key string, defaultValue string) string {
 		return defaultValue
 	} else {
 		return t
+	}
+}
+
+func (p HookParameters) getInt64(key string, defaultValue int64) int64 {
+	if v, ex := p[key]; !ex {
+		return defaultValue
+	} else {
+		switch i := v.(type) {
+		case int64:
+			return i
+		case int:
+			return int64(i)
+		case int32:
+			return int64(i)
+		default:
+			return defaultValue
+		}
 	}
 }
 

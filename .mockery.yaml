@@ -1,0 +1,13 @@
+with-expecter: true
+filename: "mock_{{.InterfaceName}}.go"
+dir: "{{.InterfaceDir}}"
+inpackage: True
+
+packages:
+  SyncthingHook/eventhandler:
+    interfaces:
+      Handler:
+      cmdExecutor:
+  SyncthingHook/utils/clock:
+    interfaces:
+      TimeProvider:
