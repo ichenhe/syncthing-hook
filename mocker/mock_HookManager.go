@@ -3,8 +3,7 @@
 package mocker
 
 import (
-	domain "SyncthingHook/domain"
-
+	domain "github.com/ichenhe/syncthing-hook/domain"
 	mock "github.com/stretchr/testify/mock"
 )
 

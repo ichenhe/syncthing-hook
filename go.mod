@@ -1,4 +1,4 @@
-module SyncthingHook
+module github.com/ichenhe/syncthing-hook
 
 go 1.21
 

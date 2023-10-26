@@ -1,7 +1,7 @@
 package stclient
 
 import (
-	"SyncthingHook/utils/safechan"
+	"github.com/ichenhe/syncthing-hook/utils/safechan"
 	"github.com/syncthing/syncthing/lib/events"
 	"sort"
 	"strconv"

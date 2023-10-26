@@ -1,7 +1,7 @@
 package exevent
 
 import (
-	"SyncthingHook/domain"
+	"github.com/ichenhe/syncthing-hook/domain"
 )
 
 // applyHandlers listens given event channel and pass the event to the handler chain built by handlers.

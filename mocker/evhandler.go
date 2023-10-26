@@ -1,7 +1,7 @@
 package mocker
 
 import (
-	"SyncthingHook/domain"
+	"github.com/ichenhe/syncthing-hook/domain"
 	"testing"
 )
 

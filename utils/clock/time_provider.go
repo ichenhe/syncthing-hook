@@ -1,7 +1,7 @@
 package clock
 
 import (
-	"SyncthingHook/domain"
+	"github.com/ichenhe/syncthing-hook/domain"
 	"time"
 )
 

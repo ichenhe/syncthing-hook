@@ -1,9 +1,9 @@
 package stclient
 
 import (
-	"SyncthingHook/domain"
 	"fmt"
 	"github.com/go-resty/resty/v2"
+	"github.com/ichenhe/syncthing-hook/domain"
 	"github.com/syncthing/syncthing/lib/events"
 	"go.uber.org/zap"
 	"strings"

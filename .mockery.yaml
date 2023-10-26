@@ -4,10 +4,10 @@ dir: "mocker"
 outpkg: "mocker"
 
 packages:
-  SyncthingHook/domain:
+  github.com/ichenhe/syncthing-hook/domain:
     config:
       all: true
-  SyncthingHook/exevent:
+  github.com/ichenhe/syncthing-hook/exevent:
     config:
       all: false
       dir: "{{.InterfaceDir}}"

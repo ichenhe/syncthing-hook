@@ -1,8 +1,8 @@
 package hook
 
 import (
-	"SyncthingHook/domain"
 	"fmt"
+	"github.com/ichenhe/syncthing-hook/domain"
 	"go.uber.org/zap"
 	"sync"
 )

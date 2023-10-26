@@ -1,8 +1,8 @@
 package exevent
 
 import (
-	"SyncthingHook/domain"
-	"SyncthingHook/mocker"
+	"github.com/ichenhe/syncthing-hook/domain"
+	"github.com/ichenhe/syncthing-hook/mocker"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"testing"

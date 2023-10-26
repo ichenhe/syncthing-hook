@@ -1,7 +1,7 @@
 package exevent
 
 import (
-	"SyncthingHook/domain"
+	"github.com/ichenhe/syncthing-hook/domain"
 	"go.uber.org/zap"
 	"time"
 )

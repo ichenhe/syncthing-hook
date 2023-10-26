@@ -1,8 +1,8 @@
 package exevent
 
 import (
-	"SyncthingHook/domain"
 	"fmt"
+	"github.com/ichenhe/syncthing-hook/domain"
 	"github.com/syncthing/syncthing/lib/events"
 	"go.uber.org/zap"
 	"sync"

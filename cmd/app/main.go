@@ -1,10 +1,10 @@
 package main
 
 import (
-	"SyncthingHook/domain"
-	"SyncthingHook/exevent"
-	"SyncthingHook/hook"
-	"SyncthingHook/stclient"
+	"github.com/ichenhe/syncthing-hook/domain"
+	"github.com/ichenhe/syncthing-hook/exevent"
+	"github.com/ichenhe/syncthing-hook/hook"
+	"github.com/ichenhe/syncthing-hook/stclient"
 	"github.com/syncthing/syncthing/lib/sync"
 	"go.uber.org/zap"
 )

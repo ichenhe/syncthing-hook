@@ -1,8 +1,8 @@
 package stclient
 
 import (
-	"SyncthingHook/domain"
 	"github.com/go-resty/resty/v2"
+	"github.com/ichenhe/syncthing-hook/domain"
 )
 
 func (s *SyncthingClient) GetSystemStatus() (*domain.SystemStatus, error) {
