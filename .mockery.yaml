@@ -1,13 +1,17 @@
 with-expecter: true
 filename: "mock_{{.InterfaceName}}.go"
-dir: "{{.InterfaceDir}}"
-inpackage: True
+dir: "mocker"
+outpkg: "mocker"
 
 packages:
-  SyncthingHook/eventhandler:
+  SyncthingHook/domain:
+    config:
+      all: true
+  SyncthingHook/exevent:
+    config:
+      all: false
+      dir: "{{.InterfaceDir}}"
+      outpkg: "{{.PackageName}}"
+      inpackage: True
     interfaces:
-      Handler:
       cmdExecutor:
-  SyncthingHook/utils/clock:
-    interfaces:
-      TimeProvider:

@@ -1,15 +1,16 @@
 package clock
 
-import "time"
+import (
+	"SyncthingHook/domain"
+	"time"
+)
 
-type TimeProvider interface {
-	NowUnixMilli() int64
+// TimeProvider just uses builtin time package.
+type TimeProvider struct {
 }
 
-// DefaultTimeProvider just uses builtin time package.
-type DefaultTimeProvider struct {
-}
+var _ domain.TimeProvider = (*TimeProvider)(nil)
 
-func (d *DefaultTimeProvider) NowUnixMilli() int64 {
+func (d *TimeProvider) NowUnixMilli() int64 {
 	return time.Now().UnixMilli()
 }
