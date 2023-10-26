@@ -2,10 +2,11 @@ package stclient
 
 import (
 	"github.com/go-resty/resty/v2"
+	"github.com/ichenhe/syncthing-hook/domain"
 )
 
-func (s *Syncthing) GetSystemStatus() (*SystemStatus, error) {
-	result := &SystemStatus{}
+func (s *SyncthingClient) GetSystemStatus() (*domain.SystemStatus, error) {
+	result := &domain.SystemStatus{}
 	if resp, err := s.newRequest(result).Get("/rest/system/status"); err != nil {
 		return nil, newApiError(err)
 	} else if resp.IsError() {
@@ -15,6 +16,6 @@ func (s *Syncthing) GetSystemStatus() (*SystemStatus, error) {
 	}
 }
 
-func (s *Syncthing) newRequest(result interface{}) *resty.Request {
+func (s *SyncthingClient) newRequest(result interface{}) *resty.Request {
 	return s.client.NewRequest().SetResult(result)
 }

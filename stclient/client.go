@@ -3,13 +3,14 @@ package stclient
 import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
+	"github.com/ichenhe/syncthing-hook/domain"
 	"github.com/syncthing/syncthing/lib/events"
 	"go.uber.org/zap"
 	"strings"
 )
 
-// Syncthing represents a Syncthing instance. It is used to interact with Syncthing.
-type Syncthing struct {
+// SyncthingClient represents a SyncthingClient instance. It is used to interact with SyncthingClient.
+type SyncthingClient struct {
 	Url               string
 	client            *resty.Client
 	eventSubscription *eventSubscription
@@ -19,7 +20,9 @@ type Syncthing struct {
 	allEventTypes string
 }
 
-func NewSyncthing(url string, apikey string, logger *zap.SugaredLogger) (*Syncthing, error) {
+var _ domain.SyncthingClient = (*SyncthingClient)(nil)
+
+func NewSyncthing(url string, apikey string, logger *zap.SugaredLogger) (*SyncthingClient, error) {
 	client := resty.New()
 	client.SetBaseURL(url)
 	client.SetHeader("X-API-Key", apikey)
@@ -38,7 +41,7 @@ func NewSyncthing(url string, apikey string, logger *zap.SugaredLogger) (*Syncth
 		allEvents = append(allEvents, e.String())
 	}
 
-	server := &Syncthing{
+	server := &SyncthingClient{
 		Url:               url,
 		client:            client,
 		eventSubscription: newEventSubscription(),
@@ -48,6 +51,6 @@ func NewSyncthing(url string, apikey string, logger *zap.SugaredLogger) (*Syncth
 	return server, nil
 }
 
-func (s *Syncthing) string() string {
-	return fmt.Sprintf("Syncthing[%s]", s.Url)
+func (s *SyncthingClient) String() string {
+	return fmt.Sprintf("SyncthingClient[%s]", s.Url)
 }

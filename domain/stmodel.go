@@ -1,4 +1,4 @@
-package stclient
+package domain
 
 import "time"
 

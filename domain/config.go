@@ -1,9 +1,10 @@
-package sthook
+package domain
 
 import (
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
+	"go.uber.org/zap"
 )
 
 type AppProfile struct {
@@ -25,10 +26,30 @@ type Hook struct {
 		Var   string `koanf:"var"`
 		Value string `koanf:"value"`
 	} `koanf:"conditions"`
-	Action struct {
-		Type string   `koanf:"type"`
-		Cmd  []string `koanf:"cmd"`
-	} `koanf:"action"`
+	Action HookAction `koanf:"action"`
+}
+
+type HookAction struct {
+	Type string   `koanf:"type"`
+	Cmd  []string `koanf:"cmd"`
+}
+
+// HookDefinition represents a Hook item in the configuration.
+type HookDefinition struct {
+	Name  string
+	Index int
+}
+
+func NewHookDefinition(name string, index int) *HookDefinition {
+	return &HookDefinition{
+		Name:  name,
+		Index: index,
+	}
+}
+
+// AddToLogger adds hook definition info to the given logger, returns new logger.
+func (d *HookDefinition) AddToLogger(logger *zap.SugaredLogger) *zap.SugaredLogger {
+	return logger.With(zap.String("hookName", d.Name), zap.Int("hookIndex", d.Index))
 }
 
 func LoadAppProfile(path string) (*AppProfile, error) {
@@ -43,7 +64,12 @@ func LoadAppProfile(path string) (*AppProfile, error) {
 	return appProfile, nil
 }
 
-func (p HookParameters) getString(key string, defaultValue string) string {
+func (p HookParameters) ContainsKey(key string) (ex bool) {
+	_, ex = p[key]
+	return
+}
+
+func (p HookParameters) GetString(key string, defaultValue string) string {
 	if v, ex := p[key]; !ex {
 		return defaultValue
 	} else if t, ok := v.(string); !ok {
@@ -53,7 +79,24 @@ func (p HookParameters) getString(key string, defaultValue string) string {
 	}
 }
 
-func (p HookParameters) extractIntIfExist(key string, target *int) {
+func (p HookParameters) GetInt64(key string, defaultValue int64) int64 {
+	if v, ex := p[key]; !ex {
+		return defaultValue
+	} else {
+		switch i := v.(type) {
+		case int64:
+			return i
+		case int:
+			return int64(i)
+		case int32:
+			return int64(i)
+		default:
+			return defaultValue
+		}
+	}
+}
+
+func (p HookParameters) ExtractIntIfExist(key string, target *int) {
 	if v, ex := p[key]; ex {
 		if s, ok := v.(int); ok {
 			*target = s
@@ -61,7 +104,7 @@ func (p HookParameters) extractIntIfExist(key string, target *int) {
 	}
 }
 
-func (p HookParameters) extractInt64IfExist(key string, target *int64) {
+func (p HookParameters) ExtractInt64IfExist(key string, target *int64) {
 	if v, ex := p[key]; ex {
 		switch i := v.(type) {
 		case int64:
@@ -74,7 +117,7 @@ func (p HookParameters) extractInt64IfExist(key string, target *int64) {
 	}
 }
 
-func (p HookParameters) extractStringIfExist(key string, target *string) {
+func (p HookParameters) ExtractStringIfExist(key string, target *string) {
 	if v, ex := p[key]; ex {
 		if s, ok := v.(string); ok {
 			*target = s

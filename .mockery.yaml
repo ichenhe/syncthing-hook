@@ -1,0 +1,17 @@
+with-expecter: true
+filename: "mock_{{.InterfaceName}}.go"
+dir: "mocker"
+outpkg: "mocker"
+
+packages:
+  github.com/ichenhe/syncthing-hook/domain:
+    config:
+      all: true
+  github.com/ichenhe/syncthing-hook/exevent:
+    config:
+      all: false
+      dir: "{{.InterfaceDir}}"
+      outpkg: "{{.PackageName}}"
+      inpackage: True
+    interfaces:
+      cmdExecutor:

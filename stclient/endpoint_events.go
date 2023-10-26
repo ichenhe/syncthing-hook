@@ -1,7 +1,7 @@
 package stclient
 
 import (
-	"SyncthingHook/safechan"
+	"github.com/ichenhe/syncthing-hook/utils/safechan"
 	"github.com/syncthing/syncthing/lib/events"
 	"sort"
 	"strconv"
@@ -16,8 +16,8 @@ import (
 //
 // Note: if more than one eventTypes filter is given, only subsequent events can be fetched. This function will wait
 // until a new event or timeout. However, if there's only one event type or empty, cached events can be fetched.
-// This is the intended behavior of Syncthing API, details: https://github.com/syncthing/syncthing/issues/8902
-func (s *Syncthing) GetEvents(eventTypes []events.EventType, since int, timeout int, limit int) ([]events.Event, error) {
+// This is the intended behavior of SyncthingClient API, details: https://github.com/syncthing/syncthing/issues/8902
+func (s *SyncthingClient) GetEvents(eventTypes []events.EventType, since int, timeout int, limit int) ([]events.Event, error) {
 	types := make([]string, len(eventTypes))
 	for i, e := range eventTypes {
 		types[i] = e.String()
@@ -25,7 +25,7 @@ func (s *Syncthing) GetEvents(eventTypes []events.EventType, since int, timeout 
 	return s.getEventsWithStringTypes(strings.Join(types, ","), since, timeout, limit)
 }
 
-func (s *Syncthing) getEventsWithStringTypes(eventTypes string, since int, timeout int, limit int) ([]events.Event, error) {
+func (s *SyncthingClient) getEventsWithStringTypes(eventTypes string, since int, timeout int, limit int) ([]events.Event, error) {
 	var result []events.Event
 	params := map[string]string{
 		"events":  eventTypes,
@@ -42,7 +42,7 @@ func (s *Syncthing) getEventsWithStringTypes(eventTypes string, since int, timeo
 	}
 }
 
-func (s *Syncthing) GetDiskEvents(since int, timeout int, limit int) ([]events.Event, error) {
+func (s *SyncthingClient) GetDiskEvents(since int, timeout int, limit int) ([]events.Event, error) {
 	var result []events.Event
 	params := map[string]string{
 		"since":   strconv.Itoa(since),
@@ -76,7 +76,7 @@ func newEventSubscription() *eventSubscription {
 	}
 }
 
-func (s *Syncthing) UnsubscribeEvent(eventCh <-chan events.Event) {
+func (s *SyncthingClient) UnsubscribeEvent(eventCh <-chan events.Event) {
 	if eventCh == nil {
 		return
 	}
@@ -120,7 +120,7 @@ func (s *Syncthing) UnsubscribeEvent(eventCh <-chan events.Event) {
 
 // SubscribeEvent subscribes any events compliant with eventTypes after since. Returns the event callback. Call
 // unsubscribe if you want to stop subscription.
-func (s *Syncthing) SubscribeEvent(eventTypes []events.EventType, since int) <-chan events.Event {
+func (s *SyncthingClient) SubscribeEvent(eventTypes []events.EventType, since int) <-chan events.Event {
 	s.eventSubscription.downstreamLocker.Lock()
 	defer s.eventSubscription.downstreamLocker.Unlock()
 
@@ -147,7 +147,7 @@ func (s *Syncthing) SubscribeEvent(eventTypes []events.EventType, since int) <-c
 
 // startSubscription starts polling for all event types. The event will be sent to
 // s.eventSubscription.upstream. This function must not be called if subscription was already stated.
-func (s *Syncthing) startSubscription(since int) {
+func (s *SyncthingClient) startSubscription(since int) {
 	s.logger.Debug("subscribe upstream events")
 	s.eventSubscription.upstreamLocker.Lock()
 	s.eventSubscription.upstream = safechan.NewSafeChannel[events.Event]()
@@ -194,7 +194,7 @@ func (s *Syncthing) startSubscription(since int) {
 	}()
 }
 
-func (s *Syncthing) getAllEvents(since int, timeout int) []events.Event {
+func (s *SyncthingClient) getAllEvents(since int, timeout int) []events.Event {
 	resp, _ := s.getEventsWithStringTypes(s.allEventTypes, since, timeout, 0)
 	sort.Slice(resp, func(i, j int) bool {
 		return resp[i].SubscriptionID < resp[j].SubscriptionID
@@ -203,7 +203,7 @@ func (s *Syncthing) getAllEvents(since int, timeout int) []events.Event {
 }
 
 // dispatchEvent dispatches event from universal channel to subscribers. It requires downstreamLocker's read locker.
-func (s *Syncthing) dispatchEvent(event events.Event) {
+func (s *SyncthingClient) dispatchEvent(event events.Event) {
 	s.eventSubscription.downstreamLocker.RLock()
 	defer s.eventSubscription.downstreamLocker.RUnlock()
 	for _, subscriber := range s.eventSubscription.subscribers[event.Type] {
