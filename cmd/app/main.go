@@ -6,14 +6,15 @@ import (
 	"github.com/ichenhe/syncthing-hook/exevent"
 	"github.com/ichenhe/syncthing-hook/hook"
 	"github.com/ichenhe/syncthing-hook/stclient"
-	"github.com/syncthing/syncthing/lib/sync"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
+	"syscall"
 )
 
 func main() {
@@ -79,9 +80,12 @@ func main() {
 	}
 	logger.Infof("%d hook loaded", len(appProfile.Hooks))
 
-	group := sync.NewWaitGroup()
-	group.Add(1)
-	group.Wait()
+	sigCh := make(chan os.Signal)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+	sig := <-sigCh
+	logger.Infow("received signal, shutting down...", zap.String("sig", sig.String()))
+	hookManager.UnregisterAll()
+	logger.Info("bye")
 }
 
 func createLogger(config *domain.LogConfig) (*zap.Logger, error) {
