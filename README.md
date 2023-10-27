@@ -45,17 +45,42 @@ For example：
 
 # Events
 
-| Event                               | Description        |
-|-------------------------------------|--------------------|
-| ex:LocalFolderContentChangeDetected | Listen to an event |
+> In active development, all [Syncthing native events](https://docs.syncthing.net/dev/events.html#event-types) will be
+> supported soon.
+
+| Event                               | Description                                                       |
+|-------------------------------------|-------------------------------------------------------------------|
+| st:FolderCompletion                 | [doc](https://docs.syncthing.net/events/foldercompletion.html)    |
+| st:LocalChangeDetected              | [doc](https://docs.syncthing.net/events/localchangedetected.html) |
+| ex:LocalFolderContentChangeDetected | Based on `st:LocalChangeDetected`, with file path matcher.        |
+
+## Common Parameters
+
+Unless otherwise noted, the following parameters apply to all events:
+
+| Name      | Type  | Default | Description                                                                                                            |
+|-----------|-------|---------|------------------------------------------------------------------------------------------------------------------------|
+| tolerance | int64 | 0       | How long to wait before triggering this event (ms). Typically used to get only the latest event. `0` means no waiting. |
+| cooldown  | int64 | 0       | The maximum frequency in millisecond that this event can be triggered. `0` indicates no limitation.                    |
+
+Example:
+
+```yaml
+hooks:
+  - event-type: "st:FolderCompletion"
+    parameter:
+      tolerance: 500
+      cooldown: 3000
+```
 
 ## ex:LocalFolderContentChangeDetected
 
-Parameters:
+This event based on `st:LocalChangeDetected`. It will be triggered only when the folder id equals the given one and the
+file belongs to the given path (equal or subdirectory). Path pattern `/` matches all events.
 
-| Name      | Type   | Default | Description                                                                                                                                                                              |
-|-----------|--------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| st-folder | string |         | Folder-id in Syncthing.                                                                                                                                                                  |
-| path      | string | /       | Path to the target directory, must start with `/`.                                                                                                                                       |
-| tolerance | int64  | 1000    | How many milliseconds to wait before triggering this event after a file under target folder changed detected. In case there are subsequence events of other files. `0` means no waiting. |
-| cooldown  | int64  | 500     | The maximum frequency in millisecond that this event can be triggered. All triggering during cooldown period will be discarded. `0` indicates no cooldown needed.                        |
+**Parameters:**
+
+| Name      | Type   | Default | Description                                        |
+|-----------|--------|---------|----------------------------------------------------|
+| st-folder | string |         | Folder-id in Syncthing. Cannot be omitted.         |
+| path      | string | `/`     | Path to the target directory, must start with `/`. |
