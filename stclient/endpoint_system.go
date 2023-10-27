@@ -8,9 +8,9 @@ import (
 func (s *SyncthingClient) GetSystemStatus() (*domain.SystemStatus, error) {
 	result := &domain.SystemStatus{}
 	if resp, err := s.newRequest(result).Get("/rest/system/status"); err != nil {
-		return nil, newApiError(err)
+		return nil, domain.NewStApiReqError(err)
 	} else if resp.IsError() {
-		return nil, newHttpApiError(resp)
+		return nil, domain.NewStApiHttpError(resp)
 	} else {
 		return result, nil
 	}

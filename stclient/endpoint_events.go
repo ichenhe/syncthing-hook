@@ -1,6 +1,7 @@
 package stclient
 
 import (
+	"github.com/ichenhe/syncthing-hook/domain"
 	"github.com/ichenhe/syncthing-hook/utils/safechan"
 	"github.com/syncthing/syncthing/lib/events"
 	"sort"
@@ -34,9 +35,9 @@ func (s *SyncthingClient) getEventsWithStringTypes(eventTypes string, since int,
 		"limit":   strconv.Itoa(limit),
 	}
 	if resp, err := s.newRequest(result).SetQueryParams(params).Get("/rest/events"); err != nil {
-		return nil, newApiError(err)
+		return nil, domain.NewStApiReqError(err)
 	} else if resp.IsError() {
-		return nil, newHttpApiError(resp)
+		return nil, domain.NewStApiHttpError(resp)
 	} else {
 		return *resp.Result().(*[]events.Event), nil
 	}
@@ -50,9 +51,9 @@ func (s *SyncthingClient) GetDiskEvents(since int, timeout int, limit int) ([]ev
 		"limit":   strconv.Itoa(limit),
 	}
 	if resp, err := s.newRequest(result).SetQueryParams(params).Get("/rest/events/disk"); err != nil {
-		return nil, newApiError(err)
+		return nil, domain.NewStApiReqError(err)
 	} else if resp.IsError() {
-		return nil, newHttpApiError(resp)
+		return nil, domain.NewStApiHttpError(resp)
 	} else {
 		return *resp.Result().(*[]events.Event), nil
 	}

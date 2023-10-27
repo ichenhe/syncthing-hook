@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"fmt"
+	"github.com/go-resty/resty/v2"
 	"github.com/syncthing/syncthing/lib/events"
 )
 
@@ -26,4 +28,35 @@ type SyncthingClient interface {
 	SubscribeEvent(eventTypes []events.EventType, since int) <-chan events.Event
 
 	UnsubscribeEvent(eventCh <-chan events.Event)
+}
+
+type StApiError struct {
+	HttpStatusCode int
+	Err            error
+}
+
+var _ error = (*StApiError)(nil)
+
+func (e StApiError) Error() string {
+	if e.Err != nil {
+		return fmt.Sprintf("failed to request syncthing api: %s", e.Err)
+	} else {
+		return fmt.Sprintf("syncthing api error [status=%d]", e.HttpStatusCode)
+	}
+}
+
+func (e StApiError) Unwrap() error {
+	return e.Err
+}
+
+func NewStApiReqError(err error) StApiError {
+	return StApiError{
+		Err: err,
+	}
+}
+
+func NewStApiHttpError(resp *resty.Response) StApiError {
+	return StApiError{
+		HttpStatusCode: resp.StatusCode(),
+	}
 }
