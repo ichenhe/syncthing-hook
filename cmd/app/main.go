@@ -8,8 +8,12 @@ import (
 	"github.com/ichenhe/syncthing-hook/stclient"
 	"github.com/syncthing/syncthing/lib/sync"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -32,7 +36,7 @@ func main() {
 
 	// create logger
 	var logger *zap.SugaredLogger
-	if logger_, err := zap.NewDevelopment(); err != nil {
+	if logger_, err := createLogger(&appProfile.Log); err != nil {
 		log.Fatalf("failed to create logger: %s", err)
 		return
 	} else {
@@ -78,4 +82,51 @@ func main() {
 	group := sync.NewWaitGroup()
 	group.Add(1)
 	group.Wait()
+}
+
+func createLogger(config *domain.LogConfig) (*zap.Logger, error) {
+	parseLevel := func(l string) zapcore.LevelEnabler {
+		switch strings.ToLower(l) {
+		case "debug":
+			return zapcore.DebugLevel
+		case "info":
+			return zapcore.InfoLevel
+		case "warn":
+			return zapcore.WarnLevel
+		case "error":
+			return zapcore.ErrorLevel
+		default:
+			return nil
+		}
+	}
+
+	var cores []zapcore.Core
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	if config.Stdout.Enabled {
+		level := parseLevel(config.Stdout.Level)
+		if level == nil {
+			return nil, errors.New("invalid log level for stdout")
+		}
+		cores = append(cores, zapcore.NewCore(zapcore.NewConsoleEncoder(encoderConfig), zapcore.AddSync(os.Stdout), level))
+	}
+	if config.File.Enabled {
+		level := parseLevel(config.File.Level)
+		if level == nil {
+			return nil, errors.New("invalid log level for file")
+		}
+		if config.File.MaxSize <= 1 {
+			return nil, errors.New("log.file.max-size must >= 1 (1MB)")
+		} else if config.File.MaxBackups < 0 {
+			return nil, errors.New("log.file.max-backups must >= 0")
+		}
+		ws := zapcore.AddSync(&lumberjack.Logger{
+			Filename:   filepath.Join(config.File.Dir, "sthook.log"),
+			MaxSize:    config.File.MaxSize,
+			MaxBackups: config.File.MaxBackups,
+			LocalTime:  true,
+		})
+		cores = append(cores, zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), ws, level))
+	}
+	return zap.New(zapcore.NewTee(cores...)), nil
 }

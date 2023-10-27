@@ -5,8 +5,25 @@ import (
 )
 
 type AppProfile struct {
+	Log       LogConfig       `koanf:"log"`
 	Syncthing SyncthingConfig `koanf:"syncthing"`
 	Hooks     []Hook          `koanf:"hooks"`
+}
+
+type LogConfig struct {
+	Stdout struct {
+		Enabled bool   `koanf:"enabled"`
+		Level   string `koanf:"level"`
+	} `koanf:"stdout"`
+	File LogFileConfig `koanf:"file"`
+}
+
+type LogFileConfig struct {
+	Enabled    bool   `koanf:"enabled"`
+	Level      string `koanf:"level"`
+	Dir        string `koanf:"dir"`
+	MaxSize    int    `koanf:"max-size"`
+	MaxBackups int    `koanf:"max-backups"`
 }
 
 type SyncthingConfig struct {

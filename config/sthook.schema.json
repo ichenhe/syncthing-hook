@@ -2,52 +2,117 @@
   "$schema": "http://json-schema.org/draft-06/schema#",
   "type": "object",
   "properties": {
-    "syncthing": {
+    "log": {
       "type": "object",
       "properties": {
-        "url": {
-          "type": "string",
-          "description": "URL of the Syncthing API, must start with http(s)://, no '/rest' suffix needed. Example: http://localhost:8384.",
-          "pattern": "^http(s)?://.+$"
-        },
-        "apikey": {
-          "type": "string",
-          "description": "API key of the Syncthing. Can be obtained from the Syncthing web UI."
-        }
-      },
-      "required": [
-        "url",
-        "apikey"
-      ]
-    },
-    "hooks": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "event-type": {
-            "type": "string",
-            "description": "Event type to trigger this hook.",
-            "pattern": "^(st|ex):\\w+$"
-          },
-          "parameter": {
-            "type": "object"
-          },
-          "action": {
-            "type": "object",
-            "description": "Action to be executed when the hook is triggered.",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "exec"
-                ]
-              }
+        "stdout": {
+          "type": "object",
+          "description": "Configuration for stdout logging.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
             },
-            "required": [
-              "type"
-            ]
+            "level": {
+              "type": "string",
+              "default": "info",
+              "enum": [
+                "debug",
+                "info",
+                "warn",
+                "error"
+              ]
+            }
           }
+        },
+        "file": {
+          "type": "object",
+          "description": "Configuration for file logging.",
+          "required": [
+            "dir"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "level": {
+              "type": "string",
+              "default": "info",
+              "enum": [
+                "debug",
+                "info",
+                "warn",
+                "error"
+              ]
+            },
+            "dir": {
+              "type": "string",
+              "description": "Directory to write log files to. Filenames are automatically generated.",
+              "default": ""
+            },
+            "max-size": {
+              "type": "integer",
+              "description": "Maximum size of a log file (MB).",
+              "default": 50,
+              "minimum": 1
+            },
+            "max-backups": {
+              "type": "integer",
+              "description": "Maximum number of log files to keep.",
+              "default": 3,
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "syncthing": {
+    "type": "object",
+    "properties": {
+      "url": {
+        "type": "string",
+        "description": "URL of the Syncthing API, must start with http(s)://, no '/rest' suffix needed. Example: http://localhost:8384.",
+        "pattern": "^http(s)?://.+$"
+      },
+      "apikey": {
+        "type": "string",
+        "description": "API key of the Syncthing. Can be obtained from the Syncthing web UI."
+      }
+    },
+    "required": [
+      "url",
+      "apikey"
+    ]
+  },
+  "hooks": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "event-type": {
+          "type": "string",
+          "description": "Event type to trigger this hook.",
+          "pattern": "^(st|ex):\\w+$"
+        },
+        "parameter": {
+          "type": "object"
+        },
+        "action": {
+          "type": "object",
+          "description": "Action to be executed when the hook is triggered.",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "exec"
+              ]
+            }
+          },
+          "required": [
+            "type"
+          ]
         }
       }
     }

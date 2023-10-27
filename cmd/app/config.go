@@ -7,6 +7,7 @@ import (
 	"github.com/ichenhe/syncthing-hook/domain"
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/basicflag"
+	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/providers/env"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
@@ -59,6 +60,19 @@ func (l *configurationLoader) loadConfiguration() (*domain.AppProfile, error) {
 	profilePath := l.readProfilePath()
 	if len(profilePath) == 0 {
 		return nil, errNoProfileSpecified
+	}
+
+	// default
+	defaultConfig := map[string]any{
+		"log.stdout.enabled":   true,
+		"log.stdout.level":     "info",
+		"log.file.enabled":     false,
+		"log.file.level":       "info",
+		"log.file.max-size":    50,
+		"log.file.max-backups": 3,
+	}
+	if err := k.Load(confmap.Provider(defaultConfig, "."), nil); err != nil {
+		return nil, fmt.Errorf("failed to load default config: %w", err)
 	}
 
 	// from file

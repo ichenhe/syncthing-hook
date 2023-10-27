@@ -1,3 +1,14 @@
+log:
+  stdout:
+    enabled: true
+    level: info
+  file:
+    enabled: false
+    level: info
+    dir: ./
+    max-size: 10 # MB
+    max-backups: 3
+
 syncthing:
   url: http://localhost:8384
   apikey: ""
