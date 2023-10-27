@@ -1,3 +1,26 @@
+# Syncthing Hook
+
+Do you want to notify your programs to reload when a file is updated? Maybe also need to limit the trigger frequency?
+That is what SyncthingHook does.
+
+This project adds hook function to [Syncthing](https://syncthing.net/) (open source file synchronization program), but
+works as a standalone program. The basic principle is to constantly request
+the [Syncthing API](https://docs.syncthing.net/dev/rest.html) to get the latest events and perform specified actions. So
+SynchingHook is compatible with Syncthing on any platform, and can even listen to remote service.
+
+**Features:**
+
+- Single executable file, which is very easy to deploy.
+- Supports many kinds of event, including Syncthing native event and extra event.
+- Supports multiple filters depending on the kind of event.
+
+# Quick Start
+
+1. Download the executable file from the [release page](https://github.com/ichenhe/syncthing-hook/releases).
+2. Copy the [example config file](https://github.com/ichenhe/syncthing-hook/blob/main/config/config.example.sthook.yaml)
+   and write your version.
+3. Run it with profile: `./SyncthingHook --profile /path/to/config.yaml`
+
 # Configuration
 
 ## Profile
@@ -84,3 +107,23 @@ file belongs to the given path (equal or subdirectory). Path pattern `/` matches
 |-----------|--------|---------|----------------------------------------------------|
 | st-folder | string |         | Folder-id in Syncthing. Cannot be omitted.         |
 | path      | string | `/`     | Path to the target directory, must start with `/`. |
+
+# Actions
+
+The only action type currently supported is `exec`. However, since it can run any command, you may do whatever you
+want (e.g. run a python script).
+
+Example:
+
+```yaml
+action:
+  type: "exec"
+  cmd: [ "python", "do.py" ]
+  # cmd: [ "python do.py" ] BAD!
+```
+
+Please note:
+
+- The first element of `cmd` must be the program, which means you can't put parameters in it.
+- SyncthingHook won't wait for the command to return. So it also doesn't wait for the command to complete before
+  executing the next action (triggered by next event).
