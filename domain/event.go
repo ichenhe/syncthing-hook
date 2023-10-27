@@ -36,14 +36,6 @@ func convertFromStEventType(eventType events.EventType) EventType {
 	panic(errors.New(fmt.Sprintf("unknown st exevent type '%d'", eventType)))
 }
 
-func NewEvent(eventType EventType, eventTime time.Time, data any) *Event {
-	return &Event{
-		Time: eventTime,
-		Type: eventType,
-		Data: data,
-	}
-}
-
 type EventType string
 
 var ErrNotValidNativeEventType = errors.New("not a valid native event type")

@@ -1,17 +1,42 @@
 package main
 
 import (
+	"errors"
 	"github.com/ichenhe/syncthing-hook/domain"
 	"github.com/ichenhe/syncthing-hook/exevent"
 	"github.com/ichenhe/syncthing-hook/hook"
 	"github.com/ichenhe/syncthing-hook/stclient"
 	"github.com/syncthing/syncthing/lib/sync"
 	"go.uber.org/zap"
+	"log"
+	"os"
 )
 
 func main() {
-	appProfile, _ := domain.LoadAppProfile("/Users/chenhe/Developer/SyncthingHook/config/config.sthook.yaml")
-	logger, _ := zap.NewDevelopment()
+	var err error
+	var appProfile *domain.AppProfile
+
+	// read configuration
+	configLoader := newConfigurationLoader(&defaultArgumentFetcher{})
+	appProfile, err = configLoader.loadConfiguration()
+	if err != nil {
+		if errors.Is(err, errNoProfileSpecified) {
+			log.Printf("please specify the profile with cmd or environment variable '%s'", _ProfileEnv)
+			configLoader.printUsage()
+			os.Exit(1)
+			return
+		}
+		log.Fatalf("failed to load confirguration: %s", err)
+		return
+	}
+
+	// create logger
+	var logger *zap.Logger
+	logger, err = zap.NewDevelopment()
+	if err != nil {
+		log.Fatalf("failed to create logger: %s", err)
+		return
+	}
 	defer func(logger *zap.Logger) {
 		_ = logger.Sync()
 	}(logger)

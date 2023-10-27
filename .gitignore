@@ -5,6 +5,8 @@
 /.idea
 
 # build
+/cmd/app/app
+/cmd/app/app.exe
 /bin
 *.exe
 *.exe~

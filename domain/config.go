@@ -1,18 +1,17 @@
 package domain
 
 import (
-	"github.com/knadh/koanf/parsers/yaml"
-	"github.com/knadh/koanf/providers/file"
-	"github.com/knadh/koanf/v2"
 	"go.uber.org/zap"
 )
 
 type AppProfile struct {
-	Syncthing struct {
-		Url    string `koanf:"url"`
-		ApiKey string `koanf:"apikey"`
-	} `koanf:"syncthing"`
-	Hooks []Hook `koanf:"hooks"`
+	Syncthing SyncthingConfig `koanf:"syncthing"`
+	Hooks     []Hook          `koanf:"hooks"`
+}
+
+type SyncthingConfig struct {
+	Url    string `koanf:"url"`
+	ApiKey string `koanf:"apikey"`
 }
 
 type HookParameters map[string]any
@@ -50,18 +49,6 @@ func NewHookDefinition(name string, index int) *HookDefinition {
 // AddToLogger adds hook definition info to the given logger, returns new logger.
 func (d *HookDefinition) AddToLogger(logger *zap.SugaredLogger) *zap.SugaredLogger {
 	return logger.With(zap.String("hookName", d.Name), zap.Int("hookIndex", d.Index))
-}
-
-func LoadAppProfile(path string) (*AppProfile, error) {
-	k := koanf.New(".")
-	if err := k.Load(file.Provider(path), yaml.Parser()); err != nil {
-		return nil, err
-	}
-	appProfile := &AppProfile{}
-	if err := k.Unmarshal("", appProfile); err != nil {
-		return nil, err
-	}
-	return appProfile, nil
 }
 
 func (p HookParameters) ContainsKey(key string) (ex bool) {
