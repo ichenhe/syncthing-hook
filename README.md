@@ -34,13 +34,13 @@ all of them:
 
 | Config Item      | Command Line Argument | Environment Variable      |
 |------------------|-----------------------|---------------------------|
-| syncthing.url    | `--syncthing-url`     | `STHOOK_SYNCTHING_URL`    |
-| syncthing.apikey | `--syncthing-apikey`  | `STHOOK_SYNCTHING_APIKEY` |
+| syncthing.url    | `--syncthing.url`     | `STHOOK_SYNCTHING_URL`    |
+| syncthing.apikey | `--syncthing.apikey`  | `STHOOK_SYNCTHING_APIKEY` |
 
 For example：
 
 ```shell
-./sthook --syncthing-url http://localhost:8384 --syncthing-apikey aaabbbccc
+./sthook --syncthing.url http://localhost:8384 --syncthing.apikey aaabbbccc
 ```
 
 # Events
