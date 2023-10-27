@@ -125,5 +125,5 @@ action:
 Please note:
 
 - The first element of `cmd` must be the program, which means you can't put parameters in it.
-- SyncthingHook won't wait for the command to return. So it also doesn't wait for the command to complete before
-  executing the next action (triggered by next event).
+- SyncthingHook won't wait for the command to return. So it may execute the command (triggered by next event) while the
+  previous one is still running.
