@@ -121,6 +121,8 @@ func (s *SyncthingClient) UnsubscribeEvent(eventCh <-chan events.Event) {
 
 // SubscribeEvent subscribes any events compliant with eventTypes after since. Returns the event callback. Call
 // unsubscribe if you want to stop subscription.
+//
+// If the given since is -1, it will get the id of the current latest event as since.
 func (s *SyncthingClient) SubscribeEvent(eventTypes []events.EventType, since int) <-chan events.Event {
 	s.eventSubscription.downstreamLocker.Lock()
 	defer s.eventSubscription.downstreamLocker.Unlock()
@@ -148,6 +150,8 @@ func (s *SyncthingClient) SubscribeEvent(eventTypes []events.EventType, since in
 
 // startSubscription starts polling for all event types. The event will be sent to
 // s.eventSubscription.upstream. This function must not be called if subscription was already stated.
+//
+// If the given since is -1, it will get the id of the current latest event as since.
 func (s *SyncthingClient) startSubscription(since int) {
 	s.logger.Debug("subscribe upstream events")
 	s.eventSubscription.upstreamLocker.Lock()
@@ -171,6 +175,14 @@ func (s *SyncthingClient) startSubscription(since int) {
 	const timeout int = 60
 	s.logger.Debugw("start polling upstream events", "since", realSince)
 	go func() {
+		if realSince == -1 { // auto since
+			resp := s.getAllEvents(realSince, timeout)
+			if len(resp) == 0 {
+				realSince = 0
+			} else {
+				realSince = resp[len(resp)-1].SubscriptionID
+			}
+		}
 		for { // polling
 			resp := s.getAllEvents(realSince, timeout)
 			if len(resp) == 0 {

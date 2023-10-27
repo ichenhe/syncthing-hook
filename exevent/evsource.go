@@ -54,7 +54,7 @@ func (s *EventSource) Subscribe(eventType domain.EventType, params *domain.HookP
 		if err != nil {
 			return nil, err
 		}
-		nativeCh := s.stClient.SubscribeEvent([]events.EventType{nativeType}, 0)
+		nativeCh := s.stClient.SubscribeEvent([]events.EventType{nativeType}, -1)
 		eventCh = domain.ConvertNativeEventChannel(nativeCh)
 		eventUnsub = eventUnsubscriberFunc(func() {
 			s.stClient.UnsubscribeEvent(nativeCh)

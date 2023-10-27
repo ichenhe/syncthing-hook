@@ -16,7 +16,7 @@ func detectLocalFolderContentChanged(stClient domain.SyncthingClient, params *do
 		return nil, nil, domain.NewIllegalEventParamError("'path' can not be empty")
 	}
 
-	sourceEventCh := stClient.SubscribeEvent([]events.EventType{events.LocalChangeDetected}, 0)
+	sourceEventCh := stClient.SubscribeEvent([]events.EventType{events.LocalChangeDetected}, -1)
 
 	unsubscriber := eventUnsubscriberFunc(func() {
 		stClient.UnsubscribeEvent(sourceEventCh)
