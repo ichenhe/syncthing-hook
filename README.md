@@ -1,5 +1,10 @@
 # Syncthing Hook
 
+[![Release](https://img.shields.io/github/v/release/ichenhe/syncthing-hook?style=flat-square)](https://github.com/ichenhe/syncthing-hook/releases)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ichenhe/syncthing-hook?style=flat-square)](https://goreportcard.com/report/github.com/ichenhe/syncthing-hook)
+[![Build State](https://img.shields.io/github/actions/workflow/status/ichenhe/syncthing-hook/go_test.yml?style=flat-square)](https://github.com/ichenhe/syncthing-hook/actions)
+
+
 Do you want to notify your programs to reload when a file is updated? Maybe also need to limit the trigger frequency?
 That is what SyncthingHook does.
 
