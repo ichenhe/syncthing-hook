@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '^1.21.3'
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -coverprofile=coverage.out ./... > test_result.txt
+
+    - name: Upload Go test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: Go-TestResults
+        path: test_result.txt
+
+    - name: Upload Go test coverage
+      uses: actions/upload-artifact@v3
+      with:
+        name: Go-TestCoverage
+        path: coverage.out
+        
+  release:
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: write
+    env:
+      CGO_ENABLED: '0'
+      BUILD_DIR: './cmd/app/'
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '^1.21.3'
+
+    - name: Create artifacts dir
+      run: mkdir artifacts
+    - name: Build for windows
+      env:
+        GOOS: windows
+      run: |
+        GOARCH=amd64 go build -o=SyncthingHook $BUILD_DIR && mv SyncthingHook artifacts/SyncthingHook_windows_amd64.exe
+    - name: Build for macos
+      env:
+        GOOS: darwin
+      run: |
+        GOARCH=amd64 go build -o=SyncthingHook $BUILD_DIR && mv SyncthingHook artifacts/SyncthingHook_macos_amd64
+        GOARCH=arm64 go build -o=SyncthingHook $BUILD_DIR && mv SyncthingHook artifacts/SyncthingHook_macos_applesilicon
+    - name: Build for linux
+      env:
+        GOOS: linux
+      run: |
+        GOARCH=amd64 go build -o=SyncthingHook $BUILD_DIR && mv SyncthingHook artifacts/SyncthingHook_linux_amd64
+    
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        draft: true
+        artifactErrorsFailBuild: true
+        artifacts: "artifacts/*"
