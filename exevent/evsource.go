@@ -52,7 +52,7 @@ func (s *EventSource) Subscribe(eventType domain.EventType, params *domain.HookP
 	if eventType.IsNativeEvent() {
 		nativeType, err := eventType.ConvertToNative()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("can not convert %s to st event type: %w", eventType, err)
 		}
 		nativeCh := s.stClient.SubscribeEvent([]events.EventType{nativeType}, -1)
 		eventCh = domain.ConvertNativeEventChannel(nativeCh)
@@ -69,7 +69,7 @@ func (s *EventSource) Subscribe(eventType domain.EventType, params *domain.HookP
 				eventUnsub = unsub
 			}
 		default:
-			return nil, domain.NewIllegalEventParamError(fmt.Sprintf("unknown eventType: %s", eventType))
+			return nil, domain.NewIllegalEventParamError(fmt.Sprintf("internal error, recognized event type but can not register: %s", eventType))
 		}
 	}
 

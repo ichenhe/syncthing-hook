@@ -75,7 +75,7 @@ func main() {
 	for i, h := range appProfile.Hooks {
 		hookDef := domain.NewHookDefinition(h.Name, i)
 		if err := hookManager.RegisterHook(&h, hookDef); err != nil {
-			logger.Errorf("failed to regiter hook: %s", err)
+			hookDef.AddToLogger(logger).Errorf("failed to regiter hook: %s", err)
 		}
 	}
 	logger.Infof("%d hook loaded", len(appProfile.Hooks))
