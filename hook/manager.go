@@ -30,7 +30,11 @@ func (m *Manager) RegisterHook(hook *domain.Hook, hookDef *domain.HookDefinition
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
-	eventCh, err := m.eventSource.Subscribe(domain.UnmarshalEventType(hook.EventType), &hook.Parameter, nil)
+	evType := domain.UnmarshalEventType(hook.EventType)
+	if evType == domain.UnknownEventType {
+		return fmt.Errorf("failed to subscribe event: unknown event type: %s", hook.EventType)
+	}
+	eventCh, err := m.eventSource.Subscribe(evType, &hook.Parameter, nil)
 	if err != nil {
 		return fmt.Errorf("failed to subscribe exevent: %w", err)
 	}

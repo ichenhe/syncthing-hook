@@ -6,11 +6,17 @@ type EventCh = <-chan *Event
 
 // ConvertNativeEventChannel converts native event channel into custom event channel. The returned channel will be
 // closed automatically once the given native event channel is closed.
+//
+// Events that failed to convert to local event will be ignored.
 func ConvertNativeEventChannel(nativeEventCh <-chan events.Event) EventCh {
 	ch := make(chan *Event)
 	go func() {
 		for nativeEv := range nativeEventCh {
-			ch <- NewEventFromStEvent(nativeEv)
+			if ev, err := NewEventFromStEvent(nativeEv); err != nil {
+				continue
+			} else {
+				ch <- ev
+			}
 		}
 		close(ch)
 	}()

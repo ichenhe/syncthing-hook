@@ -73,14 +73,38 @@ For example：
 
 # Events
 
-> In active development, all [Syncthing native events](https://docs.syncthing.net/dev/events.html#event-types) will be
-> supported soon.
-
-| Event                               | Description                                                       |
-|-------------------------------------|-------------------------------------------------------------------|
-| st:FolderCompletion                 | [doc](https://docs.syncthing.net/events/foldercompletion.html)    |
-| st:LocalChangeDetected              | [doc](https://docs.syncthing.net/events/localchangedetected.html) |
-| ex:LocalFolderContentChangeDetected | Based on `st:LocalChangeDetected`, with file path matcher.        |
+| Event                               | Description                                                                     |
+|-------------------------------------|---------------------------------------------------------------------------------|
+| st:ConfigSaved                      | [Syncthing doc](https://docs.syncthing.net/events/configsaved.html)             |
+| st:DeviceConnected                  | [Syncthing doc](https://docs.syncthing.net/events/deviceconnected.html)         |
+| st:DeviceDisconnected               | [Syncthing doc](https://docs.syncthing.net/events/devicedisconnected.html)      |
+| st:DeviceDiscovered                 | [Syncthing doc](https://docs.syncthing.net/events/devicediscovered.html)        |
+| st:DevicePaused                     | [Syncthing doc](https://docs.syncthing.net/events/devicepaused.html)            |
+| st:DeviceResumed                    | [Syncthing doc](https://docs.syncthing.net/events/deviceresumed.html)           |
+| st:DownloadProgress                 | [Syncthing doc](https://docs.syncthing.net/events/downloadprogress.html)        |
+| st:Failure                          | [Syncthing doc](https://docs.syncthing.net/events/failure.html)                 |
+| st:FolderCompletion                 | [Syncthing doc](https://docs.syncthing.net/events/foldercompletion.html)        |
+| st:FolderErrors                     | [Syncthing doc](https://docs.syncthing.net/events/foldererrors.html)            |
+| st:FolderPaused                     | [Syncthing doc](https://docs.syncthing.net/events/folderpaused.html)            |
+| st:FolderResumed                    | [Syncthing doc](https://docs.syncthing.net/events/folderresumed.html)           |
+| st:FolderScanProgress               | [Syncthing doc](https://docs.syncthing.net/events/folderscanprogress.html)      |
+| st:FolderSummary                    | [Syncthing doc](https://docs.syncthing.net/events/foldersummary.html)           |
+| st:FolderWatchStateChanged          | [Syncthing doc](https://docs.syncthing.net/events/folderwatchstatechanged.html) |
+| st:ItemFinished                     | [Syncthing doc](https://docs.syncthing.net/events/itemfinished.html)            |
+| st:ItemStarted                      | [Syncthing doc](https://docs.syncthing.net/events/itemstarted.html)             |
+| st:ListenAddressesChanged           | [Syncthing doc](https://docs.syncthing.net/events/listenaddresseschanged.html)  |
+| st:LocalChangeDetected              | [Syncthing doc](https://docs.syncthing.net/events/localchangedetected.html)     |
+| st:LocalIndexUpdated                | [Syncthing doc](https://docs.syncthing.net/events/localindexupdated.html)       |
+| st:LoginAttempt                     | [Syncthing doc](https://docs.syncthing.net/events/loginattempt.html)            |
+| st:PendingDevicesChanged            | [Syncthing doc](https://docs.syncthing.net/events/pendingdeviceschanged.html)   |
+| st:PendingFoldersChanged            | [Syncthing doc](https://docs.syncthing.net/events/pendingfolderschanged.html)   |
+| st:RemoteChangeDetected             | [Syncthing doc](https://docs.syncthing.net/events/remotechangedetected.html)    |
+| st:RemoteDownloadProgress           | [Syncthing doc](https://docs.syncthing.net/events/remotedownloadprogress.html)  |
+| st:RemoteIndexUpdated               | [Syncthing doc](https://docs.syncthing.net/events/remoteindexupdated.html)      |
+| st:Starting                         | [Syncthing doc](https://docs.syncthing.net/events/starting.html)                |
+| st:StartupComplete                  | [Syncthing doc](https://docs.syncthing.net/events/startupcomplete.html)         |
+| st:StateChanged                     | [Syncthing doc](https://docs.syncthing.net/events/statechanged.html)            |
+| ex:LocalFolderContentChangeDetected | Based on `st:LocalChangeDetected`, with file path matcher.                      |
 
 ## Common Parameters
 
