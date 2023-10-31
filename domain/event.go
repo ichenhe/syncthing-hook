@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/syncthing/syncthing/lib/events"
-	"strings"
 	"time"
 )
 
@@ -18,60 +17,78 @@ func (e *Event) String() string {
 	return fmt.Sprintf("Event <time: %s, type: %s>", e.Time.String(), e.Type)
 }
 
-func NewEventFromStEvent(event events.Event) *Event {
+func NewEventFromStEvent(event events.Event) (*Event, error) {
+	ev := convertFromStEventType(event.Type)
+	if ev == UnknownEventType {
+		return nil, errors.New("unknown syncthing event type")
+	}
 	return &Event{
 		Time: event.Time,
-		Type: convertFromStEventType(event.Type),
+		Type: ev,
 		Data: event.Data,
-	}
+	}, nil
 }
 
+// convertFromStEventType converts a Syncthing event type to local one. Returns UnknownEventType if error.
 func convertFromStEventType(eventType events.EventType) EventType {
-	switch eventType {
-	case events.FolderCompletion:
-		return FolderCompletion
-	case events.LocalChangeDetected:
-		return LocalChangeDetected
+	if locEv, ex := mapToLocalType[eventType]; ex {
+		return locEv
 	}
-	panic(errors.New(fmt.Sprintf("unknown st exevent type '%d'", eventType)))
+	return UnknownEventType
 }
 
 type EventType string
 
 var ErrNotValidNativeEventType = errors.New("not a valid native event type")
 
+// Supported event types. Each type except UnknownEventType MUST be registered in mapToStType.
 const (
-	UnknownEventType    EventType = ""
+	UnknownEventType EventType = ""
+
 	FolderCompletion    EventType = "st:FolderCompletion"
 	LocalChangeDetected EventType = "st:LocalChangeDetected"
 
 	LocalFolderContentChangeDetected EventType = "ex:LocalFolderContentChangeDetected"
 )
 
-func UnmarshalEventType(evType string) EventType {
-	switch evType {
-	case string(FolderCompletion):
-		return FolderCompletion
-	case string(LocalFolderContentChangeDetected):
-		return LocalFolderContentChangeDetected
-	default:
-		return UnknownEventType
+// mapToStType records ALL events and corresponding native events, 0 if no corresponding event type.
+var mapToStType = map[EventType]events.EventType{
+	FolderCompletion:    events.FolderCompletion,
+	LocalChangeDetected: events.LocalChangeDetected,
+
+	LocalFolderContentChangeDetected: events.EventType(0),
+}
+
+var mapToLocalType map[events.EventType]EventType
+
+func init() {
+	// build reverse map
+	mapToLocalType = make(map[events.EventType]EventType, len(mapToStType))
+	for cu, st := range mapToStType {
+		if st != 0 {
+			mapToLocalType[st] = cu
+		}
 	}
 }
 
+func UnmarshalEventType(evType string) EventType {
+	t := EventType(evType)
+	if _, ex := mapToStType[t]; !ex {
+		return UnknownEventType
+	}
+	return t
+}
+
 func (t EventType) IsNativeEvent() bool {
-	return strings.HasPrefix(string(t), "st:")
+	e, ex := mapToStType[t]
+	return ex && e != 0
 }
 
 // ConvertToNative converts current event type to syncthing native type. Returns ErrNotValidNativeEventType if failed.
 func (t EventType) ConvertToNative() (events.EventType, error) {
-	if !t.IsNativeEvent() {
+	n, ex := mapToStType[t]
+	if !ex || n == 0 {
 		return 0, ErrNotValidNativeEventType
 	}
-	native := events.UnmarshalEventType(string(t)[3:])
-	if native == 0 {
-		return 0, ErrNotValidNativeEventType
-	} else {
-		return native, nil
-	}
+	return n, nil
 }
