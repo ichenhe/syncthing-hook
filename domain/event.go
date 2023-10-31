@@ -45,16 +45,70 @@ var ErrNotValidNativeEventType = errors.New("not a valid native event type")
 const (
 	UnknownEventType EventType = ""
 
-	FolderCompletion    EventType = "st:FolderCompletion"
-	LocalChangeDetected EventType = "st:LocalChangeDetected"
+	ConfigSaved             EventType = "st:ConfigSaved"
+	DeviceConnected         EventType = "st:DeviceConnected"
+	DeviceDisconnected      EventType = "st:DeviceDisconnected"
+	DeviceDiscovered        EventType = "st:DeviceDiscovered"
+	DevicePaused            EventType = "st:DevicePaused"
+	DeviceResumed           EventType = "st:DeviceResumed"
+	DownloadProgress        EventType = "st:DownloadProgress"
+	Failure                 EventType = "st:Failure"
+	FolderCompletion        EventType = "st:FolderCompletion"
+	FolderErrors            EventType = "st:FolderErrors"
+	FolderPaused            EventType = "st:FolderPaused"
+	FolderResumed           EventType = "st:FolderResumed"
+	FolderScanProgress      EventType = "st:FolderScanProgress"
+	FolderSummary           EventType = "st:FolderSummary"
+	FolderWatchStateChanged EventType = "st:FolderWatchStateChanged"
+	ItemFinished            EventType = "st:ItemFinished"
+	ItemStarted             EventType = "st:ItemStarted"
+	ListenAddressesChanged  EventType = "st:ListenAddressesChanged"
+	LocalChangeDetected     EventType = "st:LocalChangeDetected"
+	LocalIndexUpdated       EventType = "st:LocalIndexUpdated"
+	LoginAttempt            EventType = "st:LoginAttempt"
+	PendingDevicesChanged   EventType = "st:PendingDevicesChanged"
+	PendingFoldersChanged   EventType = "st:PendingFoldersChanged"
+	RemoteChangeDetected    EventType = "st:RemoteChangeDetected"
+	RemoteDownloadProgress  EventType = "st:RemoteDownloadProgress"
+	RemoteIndexUpdated      EventType = "st:RemoteIndexUpdated"
+	Starting                EventType = "st:Starting"
+	StartupComplete         EventType = "st:StartupComplete"
+	StateChanged            EventType = "st:StateChanged"
 
 	LocalFolderContentChangeDetected EventType = "ex:LocalFolderContentChangeDetected"
 )
 
 // mapToStType records ALL events and corresponding native events, 0 if no corresponding event type.
 var mapToStType = map[EventType]events.EventType{
-	FolderCompletion:    events.FolderCompletion,
-	LocalChangeDetected: events.LocalChangeDetected,
+	ConfigSaved:             events.ConfigSaved,
+	DeviceConnected:         events.DeviceConnected,
+	DeviceDisconnected:      events.DeviceDisconnected,
+	DeviceDiscovered:        events.DeviceDiscovered,
+	DevicePaused:            events.DevicePaused,
+	DeviceResumed:           events.DeviceResumed,
+	DownloadProgress:        events.DownloadProgress,
+	Failure:                 events.Failure,
+	FolderCompletion:        events.FolderCompletion,
+	FolderErrors:            events.FolderErrors,
+	FolderPaused:            events.FolderPaused,
+	FolderResumed:           events.FolderResumed,
+	FolderScanProgress:      events.FolderScanProgress,
+	FolderSummary:           events.FolderSummary,
+	FolderWatchStateChanged: events.FolderWatchStateChanged,
+	ItemFinished:            events.ItemFinished,
+	ItemStarted:             events.ItemStarted,
+	ListenAddressesChanged:  events.ListenAddressesChanged,
+	LocalChangeDetected:     events.LocalChangeDetected,
+	LocalIndexUpdated:       events.LocalIndexUpdated,
+	LoginAttempt:            events.LoginAttempt,
+	PendingDevicesChanged:   events.PendingDevicesChanged,
+	PendingFoldersChanged:   events.PendingFoldersChanged,
+	RemoteChangeDetected:    events.RemoteChangeDetected,
+	RemoteDownloadProgress:  events.RemoteDownloadProgress,
+	RemoteIndexUpdated:      events.RemoteIndexUpdated,
+	Starting:                events.Starting,
+	StartupComplete:         events.StartupComplete,
+	StateChanged:            events.StateChanged,
 
 	LocalFolderContentChangeDetected: events.EventType(0),
 }
