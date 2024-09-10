@@ -3,7 +3,7 @@ module github.com/ichenhe/syncthing-hook
 go 1.21
 
 require (
-	github.com/go-resty/resty/v2 v2.10.0
+	github.com/go-resty/resty/v2 v2.11.0
 	github.com/knadh/koanf/parsers/yaml v0.1.0
 	github.com/knadh/koanf/providers/basicflag v0.1.0
 	github.com/knadh/koanf/providers/confmap v0.1.0
